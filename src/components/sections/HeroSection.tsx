@@ -95,6 +95,21 @@ export const HeroSection: React.FC = () => {
             >
               Get In Touch
             </Button>
+
+            <Button
+              variant="secondary"
+              size="lg"
+              asChild
+              className="bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-all duration-300"
+            >
+              <a
+                href="https://drive.google.com/file/d/1aw083qJXuC--vXkQP47IaJbYsAzmmEg3/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Download My Resume
+              </a>
+            </Button>
           </motion.div>
 
           {/* Social Links */}
