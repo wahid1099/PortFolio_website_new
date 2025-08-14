@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Mail, Twitter, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const HeroSection: React.FC = () => {
@@ -115,11 +115,20 @@ export const HeroSection: React.FC = () => {
                 href: "https://www.linkedin.com/in/md-wahid1/",
                 label: "LinkedIn",
               },
-              { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+              {
+                icon: Twitter,
+                href: "https://x.com/Wahid45237631",
+                label: "Twitter",
+              },
               {
                 icon: Mail,
                 href: "mailto:wahidahmed890@gmail.com",
                 label: "Email",
+              },
+              {
+                icon: Code,
+                href: "https://leetcode.com/wahidahmed890/",
+                label: "Leetcode",
               },
             ].map(({ icon: Icon, href, label }) => (
               <motion.a

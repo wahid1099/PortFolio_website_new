@@ -11,10 +11,14 @@ export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Github, href: "https://github.com", label: "GitHub" },
-    { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-    { icon: Mail, href: "mailto:alex@example.com", label: "Email" },
+    { icon: Github, href: "https://github.com/wahid1099", label: "GitHub" },
+    {
+      icon: Linkedin,
+      href: "https://www.linkedin.com/in/md-wahid1/",
+      label: "LinkedIn",
+    },
+    { icon: Twitter, href: "hhttps://x.com/Wahid45237631", label: "Twitter" },
+    { icon: Mail, href: "mailto:wahidahmed890@gmail.com", label: "Email" },
   ];
 
   const quickLinks = [

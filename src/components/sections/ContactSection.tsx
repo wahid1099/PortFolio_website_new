@@ -92,7 +92,7 @@ export const ContactSection: React.FC = () => {
       href: "https://www.linkedin.com/in/md-wahid1/",
       label: "LinkedIn",
     },
-    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+    { icon: Twitter, href: "https://x.com/Wahid45237631", label: "Twitter" },
   ];
 
   return (
