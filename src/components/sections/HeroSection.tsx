@@ -15,7 +15,7 @@ export const HeroSection: React.FC = () => {
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20"
     >
       {/* Background with animated elements */}
       <div className="absolute inset-0 bg-hero-gradient opacity-10"></div>

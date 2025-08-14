@@ -133,27 +133,77 @@ export const Navigation: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Side Menu Overlay */}
+        {isOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+
+        {/* Mobile Side Menu */}
         <motion.div
-          className={`md:hidden overflow-hidden ${isOpen ? "border-t" : ""}`}
-          initial={false}
-          animate={{ height: isOpen ? "auto" : 0 }}
-          transition={{ duration: 0.3 }}
+          className={`fixed top-0 right-0 h-full w-80 max-w-[80vw] bg-background border-l shadow-2xl z-50 md:hidden ${
+            isOpen ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+          initial={{ x: "100%" }}
+          animate={{ x: isOpen ? 0 : "100%" }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          <div className="py-4 space-y-2">
-            {navItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => scrollToSection(item.href)}
-                className={`block w-full text-left px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                  activeSection === item.href.slice(1)
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
+          <div className="flex flex-col h-full">
+            {/* Side Menu Header */}
+            <div className="flex items-center justify-between p-6 border-b">
+              <div className="text-xl font-bold gradient-text">MD WAHID</div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsOpen(false)}
+                className="p-2"
               >
-                {item.name}
-              </button>
-            ))}
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+
+            {/* Side Menu Navigation */}
+            <div className="flex-1 py-6">
+              <div className="space-y-1 px-6">
+                {navItems.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => scrollToSection(item.href)}
+                    className={`flex items-center w-full text-left px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${
+                      activeSection === item.href.slice(1)
+                        ? "text-primary bg-primary/10 border-l-4 border-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Side Menu Footer */}
+            <div className="p-6 border-t">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Theme</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleTheme}
+                  className="p-2"
+                >
+                  {theme === "dark" ? (
+                    <Sun className="w-4 h-4" />
+                  ) : (
+                    <Moon className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
