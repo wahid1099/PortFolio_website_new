@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Github, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-const projects = [
+const staticProjects = [
   {
     id: 1,
     title: "E-commerce Platform",
     description:
-      "A modern e-commerce platform built with React, Node.js, and Stripe integration. Features include real-time inventory, admin dashboard, and mobile-responsive design.",
+      "A full-featured online store offering product browsing, detailed views, and a cart for managing items. Users enjoy secure authentication, smooth checkout via AmarPay, and an intuitive design for a convenient shopping experience.",
     image: "https://i.ibb.co.com/LpftQZH/Screenshot-2025-01-06-165934.png",
     tech: ["React", "Node.js", "MongoDB", "Stripe", "Tailwind"],
     github: "https://github.com/wahid1099/multi_vendor_ecom",
@@ -19,65 +19,48 @@ const projects = [
   },
   {
     id: 2,
-    title: "Task Management App",
+    title: "Tech and Tips Hub",
     description:
-      "A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
-    image: "/api/placeholder/600/400",
-    tech: ["Next.js", "TypeScript", "Prisma", "Socket.io"],
-    github: "https://github.com",
-    demo: "https://demo.com",
+      "A full-stack platform for tech enthusiasts to explore expert tips, user posts, and tutorials. It offers solutions, reviews, and guides with features for both users and admins, all in an easy-to-use interface.",
+    image: "https://i.ibb.co.com/z7xvLPq/image.png",
+    tech: ["Next.js", "TypeScript", "Mongo Db", "Socket.io", "Express js"],
+    github: "https://github.com/wahid1099/tech-tips-frontend",
+    demo: "https://techtipshubwahid.netlify.app/",
     featured: true,
-  },
-  {
-    id: 3,
-    title: "Weather Dashboard",
-    description:
-      "Beautiful weather dashboard with interactive maps, detailed forecasts, and location-based recommendations.",
-    image: "/api/placeholder/600/400",
-    tech: ["React", "D3.js", "OpenWeather API", "Chart.js"],
-    github: "https://github.com",
-    demo: "https://demo.com",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Crypto Portfolio Tracker",
-    description:
-      "Track cryptocurrency investments with real-time prices, portfolio analytics, and market insights.",
-    image: "/api/placeholder/600/400",
-    tech: ["Vue.js", "Python", "FastAPI", "CoinGecko API"],
-    github: "https://github.com",
-    demo: "https://demo.com",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Social Media Analytics",
-    description:
-      "Comprehensive social media analytics dashboard with sentiment analysis and engagement metrics.",
-    image: "/api/placeholder/600/400",
-    tech: ["Angular", "D3.js", "Python", "TensorFlow"],
-    github: "https://github.com",
-    demo: "https://demo.com",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Recipe Sharing Platform",
-    description:
-      "A community-driven recipe sharing platform with cooking timers, meal planning, and nutrition tracking.",
-    image: "/api/placeholder/600/400",
-    tech: ["React Native", "Firebase", "Expo", "Redux"],
-    github: "https://github.com",
-    demo: "https://demo.com",
-    featured: false,
   },
 ];
 
 export const ProjectsSection: React.FC = () => {
+  const [apiProjects, setApiProjects] = useState([]);
+
+  useEffect(() => {
+    fetch("https://portfolio-backend-theta-ebon.vercel.app/api/projects")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data)) {
+          // Map API data to match local structure
+          const mappedProjects = data.data.map((p, idx) => ({
+            id: staticProjects.length + idx + 1,
+            title: p.title,
+            description: p.description.replace(/<\/?[^>]+(>|$)/g, ""), // remove HTML tags
+            image: p.image,
+            tech: p.technologies || [],
+            github: p.source,
+            demo: p.live_preview,
+            featured: false, // API projects go into 'Other Projects'
+          }));
+          setApiProjects(mappedProjects);
+        }
+      })
+      .catch((err) => console.error("Error fetching projects:", err));
+  }, []);
+
+  const allProjects = [...staticProjects, ...apiProjects];
+
   return (
     <section id="projects" className="section-padding bg-muted/30">
       <div className="container-custom">
+        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -94,7 +77,7 @@ export const ProjectsSection: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Featured Projects */}
+        {/* Featured Projects (only static 1,2) */}
         <div className="mb-16">
           <motion.h3
             initial={{ opacity: 0, x: -30 }}
@@ -108,7 +91,7 @@ export const ProjectsSection: React.FC = () => {
           </motion.h3>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {projects
+            {staticProjects
               .filter((p) => p.featured)
               .map((project, index) => (
                 <motion.div
@@ -126,14 +109,6 @@ export const ProjectsSection: React.FC = () => {
                         className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-hero-gradient opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <Button size="sm" variant="secondary" className="p-2">
-                          <Github className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="secondary" className="p-2">
-                          <ExternalLink className="w-4 h-4" />
-                        </Button>
-                      </div>
                     </div>
 
                     <CardContent className="p-6">
@@ -145,11 +120,7 @@ export const ProjectsSection: React.FC = () => {
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {project.tech.map((tech) => (
-                          <Badge
-                            key={tech}
-                            variant="secondary"
-                            className="bg-muted hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                          >
+                          <Badge key={tech} variant="secondary">
                             {tech}
                           </Badge>
                         ))}
@@ -158,12 +129,7 @@ export const ProjectsSection: React.FC = () => {
 
                     <CardFooter className="p-6 pt-0">
                       <div className="flex gap-3 w-full">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1"
-                          asChild
-                        >
+                        <Button variant="outline" size="sm" asChild>
                           <a
                             href={project.github}
                             target="_blank"
@@ -175,7 +141,7 @@ export const ProjectsSection: React.FC = () => {
                         </Button>
                         <Button
                           size="sm"
-                          className="flex-1 bg-hero-gradient hover:bg-hero-gradient-dark"
+                          className="flex-1 bg-hero-gradient"
                           asChild
                         >
                           <a
@@ -195,7 +161,7 @@ export const ProjectsSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Other Projects */}
+        {/* Other Projects (from API) */}
         <div>
           <motion.h3
             initial={{ opacity: 0, x: -30 }}
@@ -209,116 +175,86 @@ export const ProjectsSection: React.FC = () => {
           </motion.h3>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects
-              .filter((p) => !p.featured)
-              .map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="portfolio-card border-0 bg-card-gradient h-full group hover:shadow-elevated transition-all duration-500">
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-hero-gradient opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+            {apiProjects.map((project, index) => (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="portfolio-card border-0 bg-card-gradient h-full group hover:shadow-elevated transition-all duration-500">
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+
+                  <CardContent className="p-4">
+                    <h4 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors duration-300">
+                      {project.title}
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-3 leading-relaxed line-clamp-2">
+                      {project.description}
+                    </p>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {project.tech.slice(0, 3).map((tech) => (
+                        <Badge
+                          key={tech}
+                          variant="secondary"
+                          className="text-xs bg-muted"
+                        >
+                          {tech}
+                        </Badge>
+                      ))}
+                      {project.tech.length > 3 && (
+                        <Badge variant="secondary" className="text-xs bg-muted">
+                          +{project.tech.length - 3}
+                        </Badge>
+                      )}
                     </div>
+                  </CardContent>
 
-                    <CardContent className="p-4">
-                      <h4 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors duration-300">
-                        {project.title}
-                      </h4>
-                      <p className="text-sm text-muted-foreground mb-3 leading-relaxed line-clamp-2">
-                        {project.description}
-                      </p>
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {project.tech.slice(0, 3).map((tech) => (
-                          <Badge
-                            key={tech}
-                            variant="secondary"
-                            className="text-xs bg-muted"
-                          >
-                            {tech}
-                          </Badge>
-                        ))}
-                        {project.tech.length > 3 && (
-                          <Badge
-                            variant="secondary"
-                            className="text-xs bg-muted"
-                          >
-                            +{project.tech.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    </CardContent>
-
-                    <CardFooter className="p-4 pt-0">
-                      <div className="flex gap-2 w-full">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1"
-                          asChild
+                  <CardFooter className="p-4 pt-0">
+                    <div className="flex gap-2 w-full">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        asChild
+                      >
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          <a
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Github className="w-3 h-3 mr-1" />
-                            Code
-                          </a>
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="flex-1 bg-hero-gradient hover:bg-hero-gradient-dark"
-                          asChild
+                          <Github className="w-3 h-3 mr-1" />
+                          Code
+                        </a>
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="flex-1 bg-hero-gradient"
+                        asChild
+                      >
+                        <a
+                          href={project.demo}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          <a
-                            href={project.demo}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="w-3 h-3 mr-1" />
-                            Demo
-                          </a>
-                        </Button>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-              ))}
+                          <ExternalLink className="w-3 h-3 mr-1" />
+                          Demo
+                        </a>
+                      </Button>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <Button
-            variant="outline"
-            size="lg"
-            className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground"
-            asChild
-          >
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github className="w-5 h-5 mr-2" />
-              View All Projects on GitHub
-            </a>
-          </Button>
-        </motion.div>
       </div>
     </section>
   );
